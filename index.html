@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rayan Al Asmi — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #080808;
+    --deep: #111111;
+    --surface: #181818;
+    --border: #2a2a2a;
+    --mid: #555555;
+    --silver: #aaaaaa;
+    --light: #e8e8e8;
+    --white: #f5f5f5;
+    --accent: #d0d0d0;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--light);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.7;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    border: 1px solid var(--white);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, background 0.15s ease;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 40px; height: 40px;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.5rem 4rem;
+    background: linear-gradient(to bottom, rgba(8,8,8,0.95), transparent);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.4s;
+  }
+  nav.scrolled { border-color: var(--border); }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.15em;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--silver);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--white); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 6rem 4rem 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 20%, rgba(255,255,255,0.03) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 10% 80%, rgba(255,255,255,0.02) 0%, transparent 60%);
+  }
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 14vw, 14rem);
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    color: var(--white);
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
+  .hero-name span { color: var(--mid); }
+  .hero-sub {
+    font-style: italic;
+    font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+    color: var(--silver);
+    margin-top: 1.5rem;
+    max-width: 600px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+  .hero-desc {
+    font-size: 1rem;
+    color: var(--mid);
+    max-width: 520px;
+    margin-top: 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.8;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+  }
+  .hero-line {
+    position: absolute; right: 4rem; top: 50%;
+    width: 1px; height: 30vh;
+    background: linear-gradient(to bottom, transparent, var(--border), transparent);
+    transform: translateY(-50%);
+  }
+  .hero-index {
+    position: absolute; right: 4.5rem; top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--mid);
+    white-space: nowrap;
+  }
+  .scroll-hint {
+    position: absolute; bottom: 2.5rem; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--mid);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 1.2s forwards;
+  }
+  .scroll-hint::after {
+    content: '';
+    width: 1px; height: 3rem;
+    background: linear-gradient(to bottom, var(--mid), transparent);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+  @keyframes scrollLine { 0%,100%{opacity:0.3;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(1.3)} }
+
+  /* SECTIONS COMMON */
+  section { padding: 7rem 4rem; border-top: 1px solid var(--border); }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 3rem;
+    display: flex; align-items: center; gap: 1.5rem;
+  }
+  .section-label::before {
+    content: '';
+    width: 2.5rem; height: 1px;
+    background: var(--border);
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 7vw, 7rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: var(--white);
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    margin-top: 4rem;
+    align-items: start;
+  }
+  .about-body { font-size: 1.15rem; color: var(--silver); line-height: 1.9; }
+  .about-body p + p { margin-top: 1.2rem; }
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  .stat-block {
+    border: 1px solid var(--border);
+    padding: 1.8rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .stat-block::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(to right, var(--white), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .stat-block:hover { border-color: var(--silver); }
+  .stat-block:hover::before { opacity: 1; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: var(--white);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-top: 0.4rem;
+  }
+
+  /* SKILLS */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5px;
+    margin-top: 4rem;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .skill-item {
+    background: var(--black);
+    padding: 2.5rem;
+    transition: background 0.3s;
+    position: relative;
+  }
+  .skill-item:hover { background: var(--deep); }
+  .skill-icon {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--mid);
+    margin-bottom: 1rem;
+  }
+  .skill-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 0.6rem;
+  }
+  .skill-desc {
+    font-size: 0.9rem;
+    color: var(--mid);
+    line-height: 1.7;
+  }
+
+  /* PROJECTS */
+  .projects-grid { margin-top: 4rem; }
+  .project-row {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 2.5rem;
+    align-items: start;
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    transition: background 0.3s;
+    cursor: default;
+  }
+  .project-row:first-child { border-top: 1px solid var(--border); }
+  .project-row::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0; top: 0;
+    background: var(--deep);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: -1;
+  }
+  .project-row:hover::after { opacity: 1; }
+  .project-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--mid);
+    padding-top: 0.3rem;
+  }
+  .project-info {}
+  .project-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 0.6rem;
+  }
+  .project-role {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    color: var(--mid);
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+  .project-desc {
+    font-size: 0.95rem;
+    color: var(--silver);
+    max-width: 600px;
+    line-height: 1.8;
+  }
+  .project-tags {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mid);
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.7rem;
+    transition: all 0.3s;
+  }
+  .project-row:hover .tag { border-color: var(--silver); color: var(--silver); }
+  .project-arrow {
+    font-size: 1.2rem;
+    color: var(--border);
+    padding-top: 0.2rem;
+    transition: color 0.3s, transform 0.3s;
+  }
+  .project-row:hover .project-arrow { color: var(--white); transform: translate(4px, -4px); }
+
+  /* PROCESS */
+  .process-flow {
+    display: flex;
+    gap: 0;
+    margin-top: 4rem;
+    border: 1px solid var(--border);
+  }
+  .process-step {
+    flex: 1;
+    padding: 2.5rem 2rem;
+    border-right: 1px solid var(--border);
+    position: relative;
+    transition: background 0.3s;
+  }
+  .process-step:last-child { border-right: none; }
+  .process-step:hover { background: var(--deep); }
+  .process-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    color: var(--border);
+    line-height: 1;
+    margin-bottom: 1rem;
+    transition: color 0.3s;
+  }
+  .process-step:hover .process-num { color: var(--white); }
+  .process-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--silver);
+    margin-bottom: 0.6rem;
+  }
+  .process-detail {
+    font-size: 0.88rem;
+    color: var(--mid);
+    line-height: 1.7;
+  }
+
+  /* IMPACT */
+  .impact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5px;
+    margin-top: 4rem;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .impact-item {
+    background: var(--black);
+    padding: 2.5rem;
+    transition: background 0.3s;
+  }
+  .impact-item:hover { background: var(--surface); }
+  .impact-category {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 0.8rem;
+  }
+  .impact-text {
+    font-size: 1.05rem;
+    color: var(--silver);
+    font-style: italic;
+  }
+
+  /* CONTACT */
+  .contact-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    margin-top: 4rem;
+    align-items: start;
+  }
+  .contact-intro {
+    font-size: 1.15rem;
+    color: var(--silver);
+    line-height: 1.9;
+  }
+  .contact-items { display: flex; flex-direction: column; gap: 1px; }
+  .contact-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    transition: padding 0.3s;
+    group: '';
+  }
+  .contact-item:hover { padding-left: 0.8rem; border-color: var(--silver); }
+  .contact-type {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+  .contact-val {
+    font-size: 1rem;
+    color: var(--white);
+    font-style: italic;
+  }
+  .open-badge {
+    display: inline-block;
+    border: 1px solid var(--border);
+    padding: 1rem 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--silver);
+    margin-top: 2rem;
+  }
+  .availability-row {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-top: 1.5rem;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--silver); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.15em;
+    color: var(--mid);
+  }
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    color: var(--mid);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* GRAIN OVERLAY */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 200;
+    opacity: 0.4;
+  }
+
+  @media(max-width:768px){
+    nav { padding: 1.2rem 2rem; }
+    section { padding: 5rem 2rem; }
+    .hero { padding: 6rem 2rem 4rem; }
+    .about-grid, .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
+    .process-flow { flex-direction: column; }
+    .process-step { border-right: none; border-bottom: 1px solid var(--border); }
+    .impact-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    .hero-line, .hero-index { display: none; }
+    .project-row { grid-template-columns: 60px 1fr; }
+    .project-arrow { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav id="nav">
+  <a href="#" class="nav-logo">R.A</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-tag">Portfolio 2026 — Corporate Communication & Events</div>
+  <div class="hero-name">Rayan<br><span>Al Asmi</span></div>
+  <div class="hero-sub">Strategic Events · Corporate Communication · Brand Experience</div>
+  <div class="hero-desc">
+    Building brand authority through strategic storytelling,<br>
+    flagship event activation, and internal engagement.
+  </div>
+  <div class="hero-line"></div>
+  <div class="hero-index">Riyadh, Saudi Arabia — 2026</div>
+  <div class="scroll-hint">Scroll</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">01 — Who I Am</div>
+  <div class="section-title reveal">About</div>
+  <div class="about-grid">
+    <div class="about-body reveal">
+      <p>Corporate Communication & Strategic Events specialist focused on positioning, experience design, and execution excellence.</p>
+      <p>Known for managing complex sponsorship activations end-to-end — from concept through vendor management to on-ground delivery. I design communication ecosystems that increase engagement internally and elevate brand trust externally.</p>
+      <p>A strong cross-functional collaborator with leadership alignment, timeline control, and budget governance at the core of every project.</p>
+    </div>
+    <div class="about-stats reveal">
+      <div class="stat-block">
+        <div class="stat-num">6+</div>
+        <div class="stat-label">Major activations delivered</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">LEAP</div>
+        <div class="stat-label">Black Hat · Annual Gathering</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">360°</div>
+        <div class="stat-label">End-to-end ownership</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">KSA</div>
+        <div class="stat-label">National campaigns & occasions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">02 — Core Expertise</div>
+  <div class="section-title reveal">Skills</div>
+  <div class="skills-grid">
+    <div class="skill-item reveal">
+      <div class="skill-icon">01 /</div>
+      <div class="skill-name">Strategic Event Leadership</div>
+      <div class="skill-desc">Sponsorship activation, booth experience design, stage presence, VIP programs, and on-ground orchestration.</div>
+    </div>
+    <div class="skill-item reveal">
+      <div class="skill-icon">02 /</div>
+      <div class="skill-name">Corporate Communication</div>
+      <div class="skill-desc">Internal campaigns, executive alignment, strategic storytelling, announcements, and organizational narratives.</div>
+    </div>
+    <div class="skill-item reveal">
+      <div class="skill-icon">03 /</div>
+      <div class="skill-name">Brand Experience Design</div>
+      <div class="skill-desc">Journey mapping, engagement mechanics, interactive concepts, and integrated content systems.</div>
+    </div>
+    <div class="skill-item reveal">
+      <div class="skill-icon">04 /</div>
+      <div class="skill-name">Operations & Governance</div>
+      <div class="skill-desc">Vendor sourcing, RFPs, negotiations, budget management (SAR/USD), PO/PR processing, and delivery control.</div>
+    </div>
+    <div class="skill-item reveal">
+      <div class="skill-icon">05 /</div>
+      <div class="skill-name">Stakeholder Management</div>
+      <div class="skill-desc">Leadership updates, cross-department coordination, and on-site team orchestration at scale.</div>
+    </div>
+    <div class="skill-item reveal">
+      <div class="skill-icon">06 /</div>
+      <div class="skill-name">National Campaigns</div>
+      <div class="skill-desc">Eid, Saudi National Day, Founding Day, and seasonal cultural moments — end-to-end creative and operational ownership.</div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section id="work">
+  <div class="section-label">03 — Selected Projects</div>
+  <div class="section-title reveal">Work</div>
+  <div class="projects-grid">
+
+    <div class="project-row reveal">
+      <div class="project-num">01</div>
+      <div class="project-info">
+        <div class="project-title">LEAP — Sponsorship Activation</div>
+        <div class="project-role">Strategic Events & Corporate Communication Lead · Riyadh</div>
+        <div class="project-desc">Positioned the company as a credible digital transformation partner within a highly competitive tech ecosystem. Delivered booth experience concept, vendor management, budget governance, and VIP journey planning.</div>
+        <div class="project-tags">
+          <span class="tag">Sponsorship</span>
+          <span class="tag">Brand Experience</span>
+          <span class="tag">VIP Program</span>
+          <span class="tag">Event Strategy</span>
+        </div>
+      </div>
+      <div class="project-arrow">↗</div>
+    </div>
+
+    <div class="project-row reveal">
+      <div class="project-num">02</div>
+      <div class="project-info">
+        <div class="project-title">Black Hat MEA — Cybersecurity Activation</div>
+        <div class="project-role">Brand & Event Lead · Riyadh</div>
+        <div class="project-desc">Differentiated brand presence and communicated cybersecurity value to enterprise audiences. Led activation strategy, experience design, visual content system, and full on-ground vendor coordination.</div>
+        <div class="project-tags">
+          <span class="tag">Cybersecurity</span>
+          <span class="tag">Activation Design</span>
+          <span class="tag">Content Strategy</span>
+        </div>
+      </div>
+      <div class="project-arrow">↗</div>
+    </div>
+
+    <div class="project-row reveal">
+      <div class="project-num">03</div>
+      <div class="project-info">
+        <div class="project-title">Annual Gathering — Internal Event</div>
+        <div class="project-role">Communication & Event Experience Lead</div>
+        <div class="project-desc">Created a unified internal experience strengthening culture, recognition, and leadership alignment. Managed event narrative, run-of-show, branding, stage visuals, signage, and vendor delivery.</div>
+        <div class="project-tags">
+          <span class="tag">Internal Events</span>
+          <span class="tag">Culture</span>
+          <span class="tag">Brand Experience</span>
+        </div>
+      </div>
+      <div class="project-arrow">↗</div>
+    </div>
+
+    <div class="project-row reveal">
+      <div class="project-num">04</div>
+      <div class="project-info">
+        <div class="project-title">Internal Communication Campaigns</div>
+        <div class="project-role">Communication Designer & Campaign Lead</div>
+        <div class="project-desc">Designed internal campaigns with clear objectives, consistent tone, and measurable engagement. Covered message framing, content calendars, creative direction, design outputs, and rollout coordination.</div>
+        <div class="project-tags">
+          <span class="tag">Internal Comms</span>
+          <span class="tag">Campaign Design</span>
+          <span class="tag">Engagement</span>
+        </div>
+      </div>
+      <div class="project-arrow">↗</div>
+    </div>
+
+    <div class="project-row reveal">
+      <div class="project-num">05</div>
+      <div class="project-info">
+        <div class="project-title">National Occasions Campaigns</div>
+        <div class="project-role">Social & Internal Design Lead</div>
+        <div class="project-desc">End-to-end creative and production ownership for Saudi National Day, Eid, and Founding Day. Delivered social media posts, internal screens, email headers, and campaign copy aligned with brand identity.</div>
+        <div class="project-tags">
+          <span class="tag">Saudi National Day</span>
+          <span class="tag">Eid</span>
+          <span class="tag">Founding Day</span>
+          <span class="tag">Design</span>
+        </div>
+      </div>
+      <div class="project-arrow">↗</div>
+    </div>
+
+    <div class="project-row reveal">
+      <div class="project-num">06</div>
+      <div class="project-info">
+        <div class="project-title">Sponsorship Package Optimization</div>
+        <div class="project-role">Strategy & Execution Lead — Multi-Event</div>
+        <div class="project-desc">Transformed raw sponsorship assets into premium brand presence across multiple flagship events. Delivered measurable visibility, stakeholder alignment, and premium brand experiences that left lasting impressions.</div>
+        <div class="project-tags">
+          <span class="tag">Sponsorship</span>
+          <span class="tag">Strategy</span>
+          <span class="tag">Brand Visibility</span>
+          <span class="tag">ROI</span>
+        </div>
+      </div>
+      <div class="project-arrow">↗</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="section-label">04 — How I Work</div>
+  <div class="section-title reveal">Process</div>
+  <div class="process-flow reveal">
+    <div class="process-step">
+      <div class="process-num">01</div>
+      <div class="process-name">Discover</div>
+      <div class="process-detail">Understanding business goals, audience, and sponsorship landscape before anything else.</div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">02</div>
+      <div class="process-name">Define</div>
+      <div class="process-detail">Scoping the experience, messaging architecture, and KPIs with leadership alignment.</div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">03</div>
+      <div class="process-name">Design</div>
+      <div class="process-detail">Creative direction, journey mapping, content systems, and visual identity.</div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">04</div>
+      <div class="process-name">Deliver</div>
+      <div class="process-detail">Vendor management, on-ground execution, budget control, and timeline governance.</div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">05</div>
+      <div class="process-name">Measure</div>
+      <div class="process-detail">Post-event wrap-ups, learnings, and recommendations for the next cycle.</div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section id="impact">
+  <div class="section-label">05 — Results</div>
+  <div class="section-title reveal">Impact</div>
+  <div class="impact-grid">
+    <div class="impact-item reveal">
+      <div class="impact-category">Visibility</div>
+      <div class="impact-text">Sponsorship assets transformed into premium brand presence across key touchpoints at LEAP, Black Hat MEA, and national events.</div>
+    </div>
+    <div class="impact-item reveal">
+      <div class="impact-category">Engagement</div>
+      <div class="impact-text">Increased audience interaction through experience design and clear storytelling, driving measurable participation at every activation.</div>
+    </div>
+    <div class="impact-item reveal">
+      <div class="impact-category">Execution</div>
+      <div class="impact-text">Delivered complex activations with vendor control, timeline governance, and leadership alignment — consistently on time and on brand.</div>
+    </div>
+    <div class="impact-item reveal">
+      <div class="impact-category">Internal</div>
+      <div class="impact-text">Improved organizational clarity and participation through structured internal communication campaigns and event experiences.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">06 — Get In Touch</div>
+  <div class="section-title reveal">Let's Connect</div>
+  <div class="contact-layout">
+    <div class="reveal">
+      <div class="contact-intro">
+        Open to Corporate Communication, Strategic Events, and Brand Experience opportunities. Let's build something memorable together.
+      </div>
+      <div class="open-badge">Open to Opportunities</div>
+      <div class="availability-row">
+        <span class="dot"></span>
+        Available — Riyadh, Saudi Arabia
+      </div>
+    </div>
+    <div class="contact-items reveal">
+      <a class="contact-item" href="mailto:yourname@email.com">
+        <span class="contact-type">Email</span>
+        <span class="contact-val">yourname@email.com</span>
+      </a>
+      <a class="contact-item" href="https://linkedin.com/in/yourname" target="_blank">
+        <span class="contact-type">LinkedIn</span>
+        <span class="contact-val">linkedin.com/in/yourname</span>
+      </a>
+      <a class="contact-item" href="#">
+        <span class="contact-type">Portfolio / Drive</span>
+        <span class="contact-val">View work samples →</span>
+      </a>
+      <div class="contact-item" style="cursor:default;">
+        <span class="contact-type">Location</span>
+        <span class="contact-val">Riyadh, Saudi Arabia</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-name">Rayan Al Asmi — 2026</div>
+  <div class="footer-copy">Corporate Communication · Strategic Events · Brand Experience</div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 6}px, ${my - 6}px)`;
+  });
+  function animateRing() {
+    rx += (mx - rx - 20) * 0.12;
+    ry += (my - ry - 20) * 0.12;
+    ring.style.transform = `translate(${rx}px, ${ry}px)`;
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Nav scroll
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
